@@ -432,3 +432,101 @@ DependencyObject parent = VisualTreeHelper.GetParent(element);
 ```
 
 ---
+
+
+---
+
+## 17. Erweiterte Themen
+
+### Input Validation
+- Verwendung von `IDataErrorInfo` oder `INotifyDataErrorInfo` zur Validierung von Benutzereingaben.
+- Beispiel mit `IDataErrorInfo`:
+```csharp
+public class Benutzer : IDataErrorInfo
+{
+    public string Name { get; set; }
+
+    public string this[string columnName]
+    {
+        get
+        {
+            if (columnName == nameof(Name) && string.IsNullOrWhiteSpace(Name))
+                return "Name darf nicht leer sein.";
+            return null;
+        }
+    }
+
+    public string Error => null;
+}
+```
+
+### Dialoge & MessageBox
+```csharp
+MessageBox.Show("Möchten Sie speichern?", "Frage", MessageBoxButton.YesNo);
+```
+- Eigene Dialogfenster per `Window.ShowDialog()` realisieren.
+
+### Routed Events (Bubbling & Tunneling)
+- Bubbling: `Button.Click`
+- Tunneling: `PreviewMouseDown`
+```xaml
+<Grid PreviewMouseDown="OnGridPreviewMouseDown" />
+```
+
+### Animationen & Storyboards
+```xaml
+<Button Name="myButton" Content="Los">
+    <Button.Triggers>
+        <EventTrigger RoutedEvent="Button.Click">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.0" Duration="0:0:1" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Button.Triggers>
+</Button>
+```
+
+### DataTemplates
+```xaml
+<ListBox ItemsSource="{Binding Personen}">
+    <ListBox.ItemTemplate>
+        <DataTemplate>
+            <StackPanel>
+                <TextBlock Text="{Binding Name}" />
+                <TextBlock Text="{Binding Alter}" />
+            </StackPanel>
+        </DataTemplate>
+    </ListBox.ItemTemplate>
+</ListBox>
+```
+
+### Ressourcen-Hierarchie
+- Ressourcen in `App.xaml` gelten global
+- Lokale Ressourcen in Fenstern oder Controls überschreiben globale
+
+### Themeing / Dark & Light Mode
+- Durch Austausch von ResourceDictionary-Dateien
+```xaml
+<ResourceDictionary Source="/Themes/Dark.xaml" />
+```
+
+### Virtualisierung in Listen
+- `VirtualizingStackPanel.IsVirtualizing="True"`
+- Verbessert Performance bei großen Datenmengen
+
+### Dispatcher / UI-Thread
+```csharp
+Application.Current.Dispatcher.Invoke(() =>
+{
+    // Zugriff auf UI-Elemente
+});
+```
+
+### Unit Testing mit MVVM
+- ViewModels durch Dependency Injection testbar
+- Beispiel: Command-Tests, PropertyChanged-Tests
+
+---
+
